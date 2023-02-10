@@ -1,19 +1,16 @@
 #!/usr/bin/node
 const request = require('request');
-let nF = 0;
-
-request(process.argv[2], function (err, response, body) {
-	if (err == null) {
-		const resp = JSON.parse(body);
-		const results = resp.results;
-		for (let i = 0; i < results.length; i++) {
-			const characters = results[i].characters;
-			for (let j = 0; j < characters.length; j++) {
-				if (characters[j].search('18') > 0) {
-					nF++;
-				}
-			}
-		}
-	}
-	console.log(nF);
+request.get(process.argv[2], function (error, response, body) {
+  if (error) console.log(error);
+  else if (response.statusCode === 200) {
+    let c = 0;
+    const results = JSON.parse(body).results;
+    const wedge = '/api/people/18/';
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].characters.find(el => el.includes(wedge))) {
+        c++;
+      }
+    }
+    console.log(c);
+  }
 });
